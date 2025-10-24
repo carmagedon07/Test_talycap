@@ -18,7 +18,7 @@
    ```
 2. **Configurar el backend**
    - Crear un archivo `.env` en `api_Backend/` siguiendo el ejemplo de variables de entorno.
-   - IMPORTANTE: Antes de arrancar el backend, crea el esquema y carga los datos iniciales ejecutando los scripts SQL incluidos en el repositorio (`db/schema.sql` y `db/seed.sql`). Por ejemplo, usando psql:
+   - IMPORTANTE: Antes de arrancar el backend, crea el esquema y carga los datos iniciales ejecutando los scripts SQL incluidos en el repositorio (`db/schema.sql`). Por ejemplo, usando psql:
 
 ```bash
 # Conexión directa (ajusta host, user y database según tu entorno)
@@ -152,3 +152,7 @@ SERVER_PORT=8080
    - Permite validar que la sesión está vigente y que el frontend puede refrescar el perfil exitosamente.
 
 > Si la API responde `401`, renueva el token repitiendo el login. Errores `0` o `503` indican indisponibilidad del backend; el frontend mostrará el modal correspondiente.
+
+## Documentación adicional incluida
+- `Prueba_BACKEND_TEORICA resuelto.pdf`: respuestas completas a las preguntas teóricas solicitadas para la prueba técnica.
+- `Insomnia_2025-10-24.json`: colección de requests para consumir los endpoints del backend con Insomnia/Postman.
