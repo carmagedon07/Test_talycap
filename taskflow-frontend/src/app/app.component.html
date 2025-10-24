@@ -39,3 +39,35 @@
 <main class="container pb-5">
   <router-outlet />
 </main>
+
+<ng-container *ngIf="backendUnavailable$ | async">
+  <div
+    class="modal fade show d-block"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="serviceUnavailableTitle"
+    aria-modal="true"
+  >
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="serviceUnavailableTitle">Servicio no disponible</h5>
+        </div>
+        <div class="modal-body">
+          <p class="mb-0">
+            En este momento no hay comunicación con el servidor. Por favor, intenta nuevamente en unos minutos.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="dismissBackendUnavailable()">
+            Cerrar
+          </button>
+          <button type="button" class="btn btn-primary" (click)="retryConnection()">
+            Reintentar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show"></div>
+</ng-container>
