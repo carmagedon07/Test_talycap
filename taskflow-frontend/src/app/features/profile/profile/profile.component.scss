@@ -1,0 +1,26 @@
+:host {
+	display: block;
+	margin-top: 2rem;
+}
+
+.stat-card {
+	background-color: #f8f9fc;
+	border-radius: 0.75rem;
+	padding: 1rem 1.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.stat-label {
+	font-size: 0.85rem;
+	text-transform: uppercase;
+	color: #6c757d;
+	letter-spacing: 0.03rem;
+}
+
+.stat-value {
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: #0d6efd;
+}

@@ -1,0 +1,166 @@
+<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3 mb-4">
+	<div>
+		<h1 class="h3 mb-1">Mis tareas</h1>
+		<p class="text-muted mb-0">Organiza tus tareas personales y haz seguimiento a tu progreso.</p>
+	</div>
+	<button type="button" class="btn btn-outline-secondary" (click)="reloadTasks()" [disabled]="isLoading">
+		<span *ngIf="!isLoading">Recargar</span>
+		<span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+		<span class="visually-hidden" *ngIf="isLoading">Cargando...</span>
+	</button>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mb-4">
+	<button
+		type="button"
+		class="btn"
+		[ngClass]="filteredStatus === 'ALL' ? 'btn-primary' : 'btn-outline-primary'"
+		(click)="onFilterChange('ALL')"
+	>
+		Todas
+	</button>
+	<button
+		type="button"
+		class="btn"
+		*ngFor="let option of statusOptions"
+		[ngClass]="filteredStatus === option.value ? 'btn-primary' : 'btn-outline-primary'"
+		(click)="onFilterChange(option.value)"
+	>
+		{{ option.label }}
+	</button>
+</div>
+
+<div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+	{{ errorMessage }}
+</div>
+
+<div *ngIf="successMessage" class="alert alert-success" role="alert">
+	{{ successMessage }}
+</div>
+
+<div class="card shadow-sm border-0 mb-4">
+	<div class="card-body p-4">
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<h2 class="h5 mb-0">{{ selectedTask ? 'Editar tarea' : 'Nueva tarea' }}</h2>
+			<button *ngIf="selectedTask" type="button" class="btn btn-sm btn-outline-secondary" (click)="cancelEdit()">
+				Cancelar edición
+			</button>
+		</div>
+
+		<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate class="row g-3">
+			<div class="col-12">
+				<label for="title" class="form-label">Título</label>
+				<input
+					id="title"
+					type="text"
+					class="form-control"
+					formControlName="title"
+					placeholder="Describe la tarea"
+					[class.is-invalid]="form.controls.title.invalid && form.controls.title.touched"
+				/>
+				<div class="invalid-feedback" *ngIf="form.controls.title.errors?.['required']">
+					El título es obligatorio.
+				</div>
+				<div class="invalid-feedback" *ngIf="form.controls.title.errors?.['maxlength']">
+					El título no debe superar los 120 caracteres.
+				</div>
+			</div>
+
+			<div class="col-12">
+				<label for="description" class="form-label">Descripción</label>
+				<textarea
+					id="description"
+					rows="3"
+					class="form-control"
+					formControlName="description"
+					placeholder="Agrega una breve descripción (opcional)"
+					[class.is-invalid]="form.controls.description.invalid && form.controls.description.touched"
+				></textarea>
+				<div class="invalid-feedback" *ngIf="form.controls.description.errors?.['maxlength']">
+					La descripción no debe superar los 500 caracteres.
+				</div>
+			</div>
+
+			<div class="col-12 col-md-4">
+				<label for="priority" class="form-label">Prioridad</label>
+				<select id="priority" class="form-select" formControlName="priority">
+					<option *ngFor="let priority of priorities" [value]="priority.value">
+						{{ priority.label }}
+					</option>
+				</select>
+			</div>
+
+			<div class="col-12">
+				<button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+					<span *ngIf="!isSubmitting">{{ selectedTask ? 'Guardar cambios' : 'Crear tarea' }}</span>
+					<span *ngIf="isSubmitting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+					<span class="visually-hidden" *ngIf="isSubmitting">Procesando...</span>
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row g-4">
+	<div class="col-12 col-lg-4" *ngFor="let column of columns">
+		<div class="task-column h-100">
+			<div class="d-flex justify-content-between align-items-center mb-3">
+				<h3 class="h6 mb-0">{{ column.label }}</h3>
+				<span class="badge bg-light text-dark">{{ tasksByStatus(column.value).length }}</span>
+			</div>
+
+			<ng-container *ngIf="tasksByStatus(column.value).length; else emptyColumn">
+				<div class="task-card card shadow-sm border-0 mb-3" *ngFor="let task of tasksByStatus(column.value)">
+					<div class="card-body">
+						<div class="d-flex justify-content-between align-items-start mb-2">
+							<h4 class="h6 mb-0">{{ task.title }}</h4>
+							<span class="badge" [ngClass]="priorityBadge(task.priority)">{{ priorityLabel(task.priority) }}</span>
+						</div>
+
+						<p class="text-muted small mb-2" *ngIf="task.description">{{ task.description }}</p>
+
+						<div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+							<span class="badge" [ngClass]="statusBadge(task.status)">{{ statusLabel(task.status) }}</span>
+							<select
+								class="form-select form-select-sm w-auto"
+								[value]="task.status"
+								(change)="updateStatus(task, $any($event.target).value)"
+							>
+								<option *ngFor="let option of statusOptions" [value]="option.value">{{ option.label }}</option>
+							</select>
+						</div>
+
+						<div class="d-flex flex-wrap gap-2">
+							<button type="button" class="btn btn-sm btn-outline-primary" (click)="editTask(task)">Editar</button>
+							<button
+								type="button"
+								class="btn btn-sm btn-outline-secondary"
+								(click)="revertStatus(task)"
+								[disabled]="task.status === 'POR_HACER'"
+							>
+								← Retroceder
+							</button>
+							<button
+								type="button"
+								class="btn btn-sm btn-outline-success"
+								(click)="advanceStatus(task)"
+								[disabled]="task.status === 'COMPLETADA'"
+							>
+								Avanzar →
+							</button>
+							<button type="button" class="btn btn-sm btn-outline-danger ms-auto" (click)="deleteTask(task)">
+								Eliminar
+							</button>
+						</div>
+					</div>
+				</div>
+			</ng-container>
+
+			<ng-template #emptyColumn>
+				<div class="alert alert-light border-dashed text-center m-0" role="status">
+					No hay tareas en esta columna.
+				</div>
+			</ng-template>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,41 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+  <div class="container">
+    <a class="navbar-brand fw-semibold" routerLink="/dashboard">TaskFlow</a>
+    <div class="collapse navbar-collapse show">
+      <ul class="navbar-nav me-auto" *ngIf="isAuthenticated$ | async">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Tablero</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/profile" routerLinkActive="active">Perfil</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        <ng-container *ngIf="isAuthenticated$ | async; else guestLinks">
+          <li class="nav-item d-flex align-items-center text-white me-3" *ngIf="user$ | async as user">
+            <span class="small">Hola, {{ user.name }}</span>
+          </li>
+          <li class="nav-item">
+            <button type="button" class="btn btn-outline-light btn-sm" (click)="onLogout()">
+              Cerrar sesión
+            </button>
+          </li>
+        </ng-container>
+      </ul>
+      <ng-template #guestLinks>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login" routerLinkActive="active">Iniciar sesión</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/register" routerLinkActive="active">Registrarse</a>
+          </li>
+        </ul>
+      </ng-template>
+    </div>
+  </div>
+</nav>
+
+<main class="container pb-5">
+  <router-outlet />
+</main>

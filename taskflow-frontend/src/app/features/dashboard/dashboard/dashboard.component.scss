@@ -1,0 +1,24 @@
+:host {
+	display: block;
+}
+
+.task-column {
+	background-color: #ffffff;
+	border-radius: 0.75rem;
+	padding: 1.5rem;
+	border: 1px solid #e7e9ef;
+	min-height: 16rem;
+}
+
+.task-card {
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+	&:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 0.75rem 1.5rem rgba(15, 23, 42, 0.1);
+	}
+}
+
+.border-dashed {
+	border: 1px dashed #c5cad6;
+}

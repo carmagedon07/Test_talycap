@@ -1,0 +1,63 @@
+<div class="row justify-content-center">
+	<div class="col-12 col-md-8 col-lg-6">
+		<div class="card shadow-sm border-0">
+			<div class="card-body p-4">
+				<div class="d-flex justify-content-between align-items-center mb-3">
+					<div>
+						<h1 class="h4 mb-1">Perfil</h1>
+						<p class="text-muted mb-0">Información básica de tu cuenta y progreso.</p>
+					</div>
+					<button type="button" class="btn btn-outline-secondary btn-sm" (click)="refreshProfile()" [disabled]="isLoading">
+						<span *ngIf="!isLoading">Actualizar</span>
+						<span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+						<span class="visually-hidden" *ngIf="isLoading">Cargando...</span>
+					</button>
+				</div>
+
+				<div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+					{{ errorMessage }}
+				</div>
+
+				<ng-container *ngIf="user$ | async as user; else emptyState">
+					<div class="mb-3">
+						<h2 class="h5 mb-1">{{ user.name }}</h2>
+						<p class="mb-0 text-muted">{{ user.email }}</p>
+					</div>
+
+					<div class="row g-3">
+						<div class="col-6">
+							<div class="stat-card">
+								<span class="stat-label">Tareas totales</span>
+								<span class="stat-value">{{ user.totalTasks }}</span>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="stat-card">
+								<span class="stat-label">Por hacer</span>
+								<span class="stat-value">{{ user.pendingTasks }}</span>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="stat-card">
+								<span class="stat-label">En progreso</span>
+								<span class="stat-value">{{ user.inProgressTasks }}</span>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="stat-card">
+								<span class="stat-label">Completadas</span>
+								<span class="stat-value">{{ user.completedTasks }}</span>
+							</div>
+						</div>
+					</div>
+				</ng-container>
+
+				<ng-template #emptyState>
+					<div class="alert alert-light mb-0" role="status">
+						No se pudo cargar la información del perfil.
+					</div>
+				</ng-template>
+			</div>
+		</div>
+	</div>
+</div>
