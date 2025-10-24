@@ -1,0 +1,21 @@
+
+
+Table users {
+  id              serial          [pk, note: "Identificador único del usuario"]
+  name            varchar(100)    [not null, note: "Nombre para mostrar en el perfil"]
+  email           varchar(150)    [not null, unique, note: "Correo de login"]
+  password_hash   varchar(255)    [not null, note: "Hash bcrypt de la contraseña"]
+  created_at      timestamp       [not null, default: `NOW()`, note: "Fecha de creación"]
+}
+
+Table tasks {
+  id            serial               [pk, note: "Identificador único de la tarea"]
+  user_id       int                  [not null, ref: > users.id, note: "Dueño de la tarea"]
+  title         varchar(150)         [not null, note: "Título corto de la tarea"]
+  description   text                 [note: "Descripción detallada"]
+  priority      task_priority_enum   [not null, default: 'media', note: "Prioridad: alta/media/baja"]
+  status        task_status_enum     [not null, default: 'POR_HACER', note: "Estado: POR_HACER / EN_PROGRESO / COMPLETADA"]
+  created_at    timestamp            [not null, default: `NOW()`, note: "Fecha en que se creó"]
+  updated_at    timestamp            [not null, default: `NOW()`, note: "Última modificación"]
+}
+
